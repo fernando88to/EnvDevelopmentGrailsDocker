@@ -1,0 +1,35 @@
+version: "3"
+services:
+  application:
+    container_name: application_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    environment:
+      - "ENV_VAR=value"
+    working_dir: /EnvDevelopmentGrailsDocker
+    volumes:
+      - .:/EnvDevelopmentGrailsDocker
+      - cache_gradle:/home/appuser/.gradle
+      - cache_grails:/home/appuser/.grails
+      - cache_m2:/home/appuser/.m2
+    networks:
+      - app-network
+    entrypoint: ./gradlew bootRun # first time is time consuming
+    #entrypoint: ./gradlew debugRun # entrypoint for debug application and after conecte intellij to debug
+
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  cache_gradle:
+    driver: local
+  cache_grails:
+    driver: local
+  cache_m2:
+    driver: local
